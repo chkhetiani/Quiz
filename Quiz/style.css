@@ -1,0 +1,14 @@
+.btn {
+  font-size: 30px;
+  margin: 10px;
+  padding: 5px 30px;
+  cursor: pointer;
+}
+
+.reset-btn {
+  background-color: red;
+}
+
+.submit-btn {
+  background-color: green;
+}
