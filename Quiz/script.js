@@ -1,23 +1,4 @@
-const questions = [
-    {
-        id: 1,
-        question: "What is the capital of Chile?",
-        answers: ["New York", "Santiago", "Tbilisi"],
-        answer: 1
-    },
-    {
-        id: 2,
-        question: "What is the smallest country in the world?",
-        answers: ["Vatican City", "United States of America"],
-        answer: 0
-    },
-    {
-        id: 3,
-        question: "What is the largest country in the world?",
-        answers: ["Russia", "China"],
-        answer: 0
-    }
-]
+let questions = [];
 
 function drawQuestions() {
     const q = document.querySelector('#questions');
@@ -55,20 +36,31 @@ function submitAnswers() {
 
     disableInputs();
 
+    let userChoices = [];
+
     for (let question of questions) {
         const name = 'q-' + question.id;
         const elem = document.querySelector(`input[name="${name}"]:checked`);
         const userChoice = elem.value;
-        const answer = question.answers[question.answer];
+        userChoices.push(userChoice);
 
-        markQuestion(userChoice, answer, question.id);
+        // const answer = question.answers[question.answer];
 
-        if (userChoice === answer) {
-            score++;
-        }
+        // markQuestion(userChoice, answer, question.id);
+
+        // if (userChoice === answer) {
+        //     score++;
+        // }
     }
 
-    document.querySelector('#result').innerText = score;
+    fetch('http://95.104.80.6:3001/submit?answers=' + JSON.stringify(userChoices), {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(score => document.querySelector('#result').innerText = score.score);
 }
 
 function disableInputs() {
@@ -96,4 +88,10 @@ function resetQuiz() {
     drawQuestions();
 }
 
-drawQuestions();
+
+fetch('http://95.104.80.6:3001/questions')
+    .then(response => response.json())
+    .then(data => {
+        questions = data;
+        drawQuestions();
+    });
